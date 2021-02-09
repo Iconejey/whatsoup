@@ -1,0 +1,15 @@
+{
+	"name": "WhatSoupe",
+	"short_name": "WhatSoupe",
+	"start_url": "http://192.168.1.21:5500/",
+	"background_color": "#131c21",
+	"theme_color": "#131c21",
+	"display": "normal",
+	"orientation": "portrait",
+	"icons": [
+		{
+			"src": "./send.png",
+			"type": "image/png"
+		}
+	]
+}
