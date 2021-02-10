@@ -94,7 +94,7 @@ const connectUser = id => {
 						let closeBtn = document.querySelector('div#qrtop i');
 
 						if ('share' in navigator) {
-							document.querySelector('div#qrlink').innerHTML = 'Partager le lien';
+							document.querySelector('a#qrlink').innerHTML = 'Partager le lien';
 							share.addEventListener('click', e => {
 								navigator
 									.share({
