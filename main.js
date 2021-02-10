@@ -99,8 +99,8 @@ const connectUser = id => {
 								navigator
 									.share({
 										title: document.title,
-										text: 'Hello World',
-										url: 'https://developer.mozilla.org'
+										text: 'Connexion à ' + user.mail,
+										url: user.connect_link
 									})
 									.then(() => closeBtn.click());
 							});
