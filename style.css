@@ -34,7 +34,7 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-	border: 5px solid #131b20;
+	border: 5px solid transparent;
 	-webkit-text-fill-color: #f1f1f2f2;
 	box-shadow: 0 0 0px 1000px #0d1418 inset;
 	-webkit-box-shadow: 0 0 0px 1000px #0d1418 inset;
@@ -180,6 +180,7 @@ form i {
 	margin-left: 5px;
 	width: 40px;
 }
+
 form i[hidden] {
 	display: none;
 }
@@ -215,26 +216,82 @@ form input#identifiant {
 	border-radius: 20px;
 }
 
-div#qrcode {
-	/* background-color: #131b20; */
+div#qrscreen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #00000088;
+	animation: fade 0.3s;
+}
+
+div#qrtag {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 80%;
+	max-width: 400px;
+	background-color: #182227;
+	padding: 10px 20px;
+	border-radius: 20px;
+	animation: fade-scale 0.2s;
+	box-shadow: 0px 0px 5px 0px black;
+}
+
+div#qrtop {
 	margin-top: 10px;
+	display: flex;
+}
+
+div#qrtop i {
+	background-color: #0d1418;
+	font-size: 32px;
+	border: 5px solid transparent;
+	border-radius: 32px;
+	margin-bottom: 15px;
+}
+
+div#qrtitle {
+	flex: 1;
+}
+
+p#qremail {
+	color: #aae;
+}
+
+p#qrsubtitle {
+	margin-bottom: 10px;
+	opacity: 0.6;
+	text-align: justify;
 }
 
 div#qrcode canvas {
 	display: block;
 	background-color: #f1f1f2f2;
-	width: 30vh;
-	height: 0px;
-	margin: auto;
-	border: 20px solid transparent;
-	border-radius: 20px;
+	width: 100%;
+	border: 8px solid transparent;
+	border-radius: 10px;
 	transition: height 0.5s;
 	image-rendering: pixelated;
 }
 
-div#qrcode.open canvas {
-	/* height: 192px; */
-	height: auto;
+div#share {
+	background-color: #0d1418;
+	display: flex;
+	justify-content: center;
+	height: 40px;
+	padding: 10px;
+	margin: 20px 15px 10px 15px;
+	border-radius: 20px;
+}
+
+div#share i {
+	transform: translateY(-13%);
+	margin-left: 5px;
+}
+
+a#qrlink {
+	color: #f1f1f2f2;
 }
 
 @keyframes fade-left {
@@ -267,5 +324,23 @@ div#qrcode.open canvas {
 	to {
 		opacity: 1;
 		transform: translateY(0px);
+	}
+}
+
+@keyframes fade-scale {
+	from {
+		transform: translate(-50%, -50%) scale(0.9);
+	}
+	to {
+		transform: translate(-50%, -50%);
+	}
+}
+
+@keyframes fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
 	}
 }

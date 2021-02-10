@@ -26,7 +26,7 @@ const supContact = (id, email) =>
 
 const qrCanvas = data => {
 	let can = document.createElement('canvas');
-	let mat = new QRCode(document.getElementById('qrcode'), location.origin + location.pathname + data)._oQRCode.modules;
+	let mat = new QRCode(document.getElementById('qrcode'), data)._oQRCode.modules;
 	can.width = mat[0].length;
 	can.height = mat.length;
 	let ctx = can.getContext('2d');
@@ -46,8 +46,13 @@ const connectUser = id => {
 	let msg = document.querySelector('p#id-msg');
 	let connectBtn = document.querySelector('i#connect');
 	let showQRBtn = document.querySelector('i#showQR');
-	let hideQRBtn = document.querySelector('i#hideQR');
 	let disconnectBtn = document.querySelector('i#disconnect');
+
+	if (!getCookie('user')) {
+		setCookie('user', id);
+		location.replace(location.origin + location.pathname);
+		return;
+	}
 
 	msg.innerHTML = 'Connection...';
 
@@ -57,13 +62,12 @@ const connectUser = id => {
 		.then(res =>
 			res.json().then(json => {
 				if (json.etat.reponse) {
-					setCookie('user', id);
-					if (urlParams.has('connect')) location.search = '';
-
 					user = {
 						mail: json.mail,
 						id: json.identifiant,
-						name: json.identite
+						name: json.identite,
+						connect_link: location.origin + location.pathname + '?connect=' + json.identifiant,
+						contact_link: location.origin + location.pathname + '?contact=' + json.email
 					};
 
 					msg.innerHTML = user.mail;
@@ -82,8 +86,15 @@ const connectUser = id => {
 					showQRBtn.addEventListener('click', e => {
 						let qrdiv = document.querySelector('div#qrcode');
 						qrdiv.innerHTML = '';
-						qrdiv.appendChild(qrCanvas('?connect=' + user.id));
-						qrdiv.classList.add('open');
+						qrdiv.appendChild(qrCanvas(user.connect_link));
+						document.querySelector('p#qremail').innerHTML = user.mail;
+						document.querySelector('div#qrscreen').hidden = false;
+						document.querySelector('div#share').addEventListener('click', e => {
+							navigator.clipboard
+								.write(user.connect_link)
+								.then(() => alert('Lien copié.'))
+								.catch(err => alert(err));
+						});
 					});
 				}
 			})

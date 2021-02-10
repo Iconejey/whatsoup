@@ -23,12 +23,10 @@
 					<div id="id-input">
 						<input id="identifiant" type="text" placeholder="identifiant" />
 						<i id="connect" class="material-icons disabled">check</i>
-						<i id="hideQR" class="material-icons" hidden>devices</i>
 						<i id="showQR" class="material-icons" hidden>devices</i>
 						<i id="disconnect" class="material-icons red" hidden>power_settings_new</i>
 					</div>
 					<p id="id-msg"></p>
-					<div id="qrcode"></div>
 				</form>
 
 				<form id="inscription" hidden>
@@ -58,6 +56,24 @@
 				<i id="more" class="material-icons">power_settings_new</i>
 			</div>
 		</header>
+
+		<div id="qrscreen" hidden>
+			<div id="qrtag">
+				<div id="qrtop">
+					<div id="qrtitle">
+						<h2>Connexion</h2>
+						<p id="qremail"></p>
+					</div>
+					<i class="material-icons" onclick="document.querySelector('div#qrscreen').hidden = true;">close</i>
+				</div>
+				<p id="qrsubtitle">Scannez le QRcode avec un smartphone ou une tablette pour vous connecter instantanément.</p>
+				<div id="qrcode"></div>
+				<div id="share">
+					<a id="qrlink">Copier le lien</a>
+					<i class="material-icons">attachment</i>
+				</div>
+			</div>
+		</div>
 
 		<script src="https://iconejey.github.io/pwa-mge/cookie.js"></script>
 		<script src="./qrcode.js"></script>
