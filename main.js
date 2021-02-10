@@ -48,7 +48,7 @@ const connectUser = id => {
 	let showQRBtn = document.querySelector('i#showQR');
 	let disconnectBtn = document.querySelector('i#disconnect');
 
-	if (!getCookie('user')) {
+	if (!getCookie('user') || urlParams.has('connect')) {
 		setCookie('user', id);
 		location.replace(location.origin + location.pathname);
 		return;
@@ -90,15 +90,31 @@ const connectUser = id => {
 						document.querySelector('p#qremail').innerHTML = user.mail;
 						document.querySelector('div#qrscreen').hidden = false;
 
-						alert('share' in navigator);
-						alert(navigator.share);
+						let share = document.querySelector('div#share');
+						let closeBtn = document.querySelector('div#qrtop i');
 
-						document.querySelector('div#share').addEventListener('click', e => {
-							navigator.clipboard
-								.writeText(user.connect_link)
-								.then(() => alert('Lien copié.'))
-								.catch(err => alert(err));
-						});
+						if ('share' in navigator) {
+							document.querySelector('div#qrlink').innerHTML = 'Partager le lien';
+							share.addEventListener('click', e => {
+								navigator
+									.share({
+										title: document.title,
+										text: 'Hello World',
+										url: 'https://developer.mozilla.org'
+									})
+									.then(() => closeBtn.click());
+							});
+						} else {
+							share.addEventListener('click', e => {
+								navigator.clipboard
+									.writeText(user.connect_link)
+									.then(() => {
+										alert('Lien copié.');
+										closeBtn.click();
+									})
+									.catch(err => alert(err));
+							});
+						}
 					});
 				}
 			})
