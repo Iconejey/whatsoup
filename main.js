@@ -89,9 +89,13 @@ const connectUser = id => {
 						qrdiv.appendChild(qrCanvas(user.connect_link));
 						document.querySelector('p#qremail').innerHTML = user.mail;
 						document.querySelector('div#qrscreen').hidden = false;
+
+						alert('share' in navigator);
+						alert(navigator.share);
+
 						document.querySelector('div#share').addEventListener('click', e => {
 							navigator.clipboard
-								.write(user.connect_link)
+								.writeText(user.connect_link)
 								.then(() => alert('Lien copié.'))
 								.catch(err => alert(err));
 						});
