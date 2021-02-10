@@ -7,10 +7,43 @@
 	color: #f1f1f2f2;
 	font-family: Arial, Helvetica, sans-serif;
 	user-select: none;
+	outline: none;
+}
+
+.red {
+	color: #f55;
+	opacity: 1;
+}
+
+.green {
+	opacity: 1;
+	color: #6b6;
+}
+
+input[disabled],
+i.disabled {
+	opacity: 0.5;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+	border: 5px solid #131b20;
+	-webkit-text-fill-color: #f1f1f2f2;
+	box-shadow: 0 0 0px 1000px #0d1418 inset;
+	-webkit-box-shadow: 0 0 0px 1000px #0d1418 inset;
 }
 
 body,
 html {
+	position: relative;
+	overflow: hidden;
 	background-color: transparent;
 	width: 100%;
 	height: 100%;
@@ -34,9 +67,22 @@ div#bg-color.bg {
 	background-color: #0d1418;
 }
 
+/* Main */
+
+main {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0%;
+	transition: top 0.5s;
+}
+
 /* Header */
 
 header {
+	position: absolute;
+	top: 0px;
+	width: 100%;
 	background-color: #182227;
 	box-shadow: 0px 0px 10px 0px black;
 	display: flex;
@@ -89,4 +135,137 @@ header.more i#more {
 section {
 	width: 100%;
 	height: 100%;
+}
+
+/* Sign up section */
+
+section#sign-up {
+	padding-top: 72px;
+}
+
+section#sign-up form {
+	background-color: #182227;
+	margin: 20px;
+	border: 15px solid #182227;
+	border-radius: 14px;
+	box-shadow: 0px 0px 5px 0px black;
+	animation: fade-bottom 0.5s;
+}
+
+div#id-input,
+div#email-input {
+	display: flex;
+	margin: 8px 0px 12px 0px;
+}
+
+form h2 {
+	margin-bottom: 10px;
+}
+
+form p {
+	opacity: 0.6;
+}
+
+form i,
+form input {
+	background-color: #0d1418;
+	font-size: 16px;
+	border: 5px solid #0d1418;
+	height: 40px;
+}
+
+form i {
+	font-size: 26px;
+	border-radius: 20px;
+	margin-left: 5px;
+	width: 40px;
+}
+form i[hidden] {
+	display: none;
+}
+
+div#id-input i {
+	padding: 3px 0px 0px 3px;
+}
+
+div#email-input i {
+	padding: 3px 0px 0px 4px;
+}
+
+form input {
+	background-color: #0d1418;
+	padding: 0px 10px;
+	font-size: 16px;
+	min-width: 10px;
+}
+
+form input#email {
+	border-radius: 0px 20px 20px 0px;
+	flex: 1.5;
+}
+
+form input#name {
+	flex: 1;
+	margin-right: 5px;
+	border-radius: 20px 0px 0px 20px;
+}
+
+form input#identifiant {
+	flex: 1;
+	border-radius: 20px;
+}
+
+div#qrcode {
+	/* background-color: #131b20; */
+	margin-top: 10px;
+}
+
+div#qrcode canvas {
+	display: block;
+	background-color: #f1f1f2f2;
+	width: 30vh;
+	height: 0px;
+	margin: auto;
+	border: 20px solid transparent;
+	border-radius: 20px;
+	transition: height 0.5s;
+	image-rendering: pixelated;
+}
+
+div#qrcode.open canvas {
+	/* height: 192px; */
+	height: auto;
+}
+
+@keyframes fade-left {
+	from {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+@keyframes fade-right {
+	from {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+@keyframes fade-bottom {
+	from {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0px);
+	}
 }

@@ -16,6 +16,33 @@
 		<div class="bg" id="bg-color"></div>
 		<div class="bg" id="bg-img"></div>
 
+		<main>
+			<section id="sign-up">
+				<form id="connexion" hidden>
+					<h2>Se connecter</h2>
+					<div id="id-input">
+						<input id="identifiant" type="text" placeholder="identifiant" />
+						<i id="connect" class="material-icons disabled">check</i>
+						<i id="hideQR" class="material-icons" hidden>devices</i>
+						<i id="showQR" class="material-icons" hidden>devices</i>
+						<i id="disconnect" class="material-icons red" hidden>power_settings_new</i>
+					</div>
+					<p id="id-msg"></p>
+					<div id="qrcode"></div>
+				</form>
+
+				<form id="inscription" hidden>
+					<h2>S'inscrire</h2>
+					<div id="email-input">
+						<input id="name" type="text" placeholder="pseudo" />
+						<input id="email" type="text" placeholder="email" />
+						<i class="material-icons disabled">send</i>
+					</div>
+					<p id="email-msg"></p>
+				</form>
+			</section>
+		</main>
+
 		<header>
 			<div id="icons">
 				<i id="back" class="material-icons">keyboard_arrow_left</i>
@@ -23,22 +50,17 @@
 			</div>
 
 			<div id="titles">
-				<h2 id="title">WhatSoupe</h2>
-				<p id="subtitle">Connexion</p>
+				<h2 id="title">WhatSoup</h2>
+				<p id="subtitle">Accueil</p>
 			</div>
 
 			<div id="right-icons">
-				<i id="more" class="material-icons">more_vert</i>
+				<i id="more" class="material-icons">power_settings_new</i>
 			</div>
 		</header>
 
-		<main>
-			<section id="sign-up" hidden></section>
-
-			<section id="contacts" hidden></section>
-		</main>
-
 		<script src="https://iconejey.github.io/pwa-mge/cookie.js"></script>
+		<script src="./qrcode.js"></script>
 		<script src="./main.js"></script>
 	</body>
 </html>
