@@ -8,7 +8,15 @@
 	height: 30vh;
 	margin: auto;
 	margin-top: 30vh;
+	transition: opacity 0.5s;
 }
 
-@media screen and (max-width: 900px) {
+#messages img[hidden] {
+	opacity: 0;
+}
+
+@media screen and (max-width: 650px) {
+	#messages img {
+		opacity: 0;
+	}
 }

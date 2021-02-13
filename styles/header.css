@@ -22,11 +22,16 @@ div#icons i {
 	font-size: 40px;
 }
 
-i#back {
+i.btn {
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+header.more i.btn {
 	opacity: 0.5;
 }
 
-i#back:hover {
+header.more i.btn:hover {
 	opacity: 1;
 }
 
@@ -46,17 +51,9 @@ div#right-icons {
 	margin-left: auto;
 }
 
-i#more {
-	margin: 16px;
+i#email-add,
+i#qr-add {
+	margin: 16px 16px 16px 0px;
 	font-size: 32px;
-	opacity: 0;
 	transition: opacity 0.3s;
-}
-
-header.more i#more {
-	opacity: 0.5;
-}
-
-header.more i#more:hover {
-	opacity: 1;
 }

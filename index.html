@@ -31,7 +31,7 @@
 							<input id="identifiant" type="text" placeholder="identifiant" />
 							<i id="connect" class="material-icons disabled">check</i>
 							<i id="cancel" class="material-icons" hidden>close</i>
-							<i id="showQR" onclick="showQRCode();" class="material-icons" hidden>devices</i>
+							<i id="showQR" onclick="showQRCode(false);" class="material-icons" hidden>devices</i>
 							<i id="disconnect" class="material-icons red" hidden>power_settings_new</i>
 						</div>
 						<p id="id-msg"></p>
@@ -47,16 +47,18 @@
 						<p id="email-msg"></p>
 					</form>
 
-					<p id="info_contacts" hidden>Chargement des contacts...</p>
+					<p class="info" id="info_contacts" hidden>Chargement des contacts...</p>
 
 					<div id="search" hidden>
-						<i class="material-icons">search</i>
-						<input type="text" oninput="showContacts()" onclick="hideConnexion(true)" />
+						<i onclick="addContact(event)" class="material-icons"></i>
+						<input type="text" placeholder="Chercher ou ajouter un contact" oninput="showContacts()" onclick="if (!document.querySelector('div#sidebar').hidden) hideConnexion(true)" />
 					</div>
 
 					<br />
 
-					<p id="add_contacts" hidden>Cliquez sur <i style="color: inherit; transform: translateY(4px); font-size: 18px" class="material-icons">person_add</i> pour ajouter un contact.</p>
+					<p class="info" id="search_contact" hidden>Entrez une addresse e-mail pour ajouter un contact.</p>
+					<p class="info" id="add_contact" hidden>Cliquez sur <i style="color: inherit; transform: translateY(4px); font-size: 18px" class="material-icons">person_add</i> pour ajouter le contact.</p>
+					<p class="info" id="adding_contact" hidden>Ajout du contact...</p>
 
 					<div id="contact-list"></div>
 
@@ -80,7 +82,7 @@
 
 			<header>
 				<div id="icons">
-					<i id="back" onclick="if (document.querySelector('div#sidebar').hidden) document.querySelector('div#sidebar').hidden = false; else hideConnexion(false);" class="material-icons">keyboard_arrow_left</i>
+					<i id="back" title="Retour" onclick="backBtn(event)" class="material-icons btn">keyboard_arrow_left</i>
 					<i id="action" class="material-icons">account_circle</i>
 				</div>
 
@@ -90,7 +92,7 @@
 				</div>
 
 				<div id="right-icons">
-					<i id="more" class="material-icons">person_add</i>
+					<i title="Partager contact" id="qr-add" onclick="showQRCode(true);" class="material-icons btn">account_box</i>
 				</div>
 			</header>
 		</section>
@@ -99,16 +101,16 @@
 			<div id="qrtag">
 				<div id="qrtop">
 					<div id="qrtitle">
-						<h2>Connexion</h2>
+						<h2></h2>
 						<p id="qremail"></p>
 					</div>
 					<i class="material-icons" onclick="document.querySelector('div#qrscreen').hidden = true;document.querySelector('section').setAttribute('style', 'filter: none');">close</i>
 				</div>
-				<p id="qrsubtitle">Scannez le QRcode avec un smartphone ou une tablette pour vous connecter instantanément.</p>
+				<p id="qrsubtitle"></p>
 				<div id="qrcode"></div>
 				<div id="share">
 					<a id="qrlink">Copier le lien</a>
-					<i class="material-icons">attachment</i>
+					<i class="material-icons">insert_link</i>
 				</div>
 			</div>
 		</div>

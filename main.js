@@ -4,6 +4,11 @@ const urlParams = new URLSearchParams(location.search);
 
 let user = null;
 let timeouts = [];
+let selected_contact = null;
+
+const getContactInfo = id => {
+	for (let c of user.contacts) if (c.relation == id) return c;
+};
 
 const fetchError = err => {
 	console.error('Erreur:', err);
@@ -23,19 +28,10 @@ const getRelations = id =>
 		)
 		.catch(fetchError);
 
-const addContact = (id, email) =>
-	fetch(api + '?lier&identifiant=' + id + '&mail=' + email)
-		.then(res => res.json().then(json => json.etat.message))
-		.catch(fetchError);
-
 const supContact = (id, contact_id) =>
 	fetch(api + '?delier&identifiant=' + id + '&relation=' + contact_id)
-		.then(res => res.json().then(json => showContacts()))
+		.then(res => res.json().then(json => getRelations(user.id)))
 		.catch(fetchError);
-
-const deleteContact = btn => {
-	let id;
-};
 
 const qrCanvas = data => {
 	let can = document.createElement('canvas');
@@ -54,16 +50,22 @@ const qrCanvas = data => {
 	return can;
 };
 
-const showQRCode = e => {
+const showQRCode = contact => {
 	let qrdiv = document.querySelector('div#qrcode');
 	let share = document.querySelector('div#share');
 	let closeBtn = document.querySelector('div#qrtop i');
 
+	document.querySelector('div#qrtitle h2').innerHTML = contact ? 'Contact' : 'Connexion';
 	document.querySelector('p#qremail').innerHTML = user.mail;
+	document.querySelector('p#qrsubtitle').innerHTML = contact
+		? 'Scannez le QRcode avec un smartphone ou une tablette pour ajouter ' + user.name + ' à vos contacts.'
+		: 'Scannez le QRcode avec un smartphone ou une tablette pour vous connecter instantanément.';
 	document.querySelector('div#qrscreen').hidden = false;
 
 	qrdiv.innerHTML = '';
-	qrdiv.appendChild(qrCanvas(user.connect_link));
+
+	let link = contact ? user.contact_link : user.connect_link;
+	qrdiv.appendChild(qrCanvas(link));
 
 	document.querySelector('section').setAttribute('style', 'filter: blur(5px)');
 
@@ -74,14 +76,14 @@ const showQRCode = e => {
 				.share({
 					title: document.title,
 					text: 'Connexion à ' + user.mail,
-					url: user.connect_link
+					url: link
 				})
 				.then(() => closeBtn.click());
 		};
 	} else {
 		share.onclick = e => {
 			navigator.clipboard
-				.writeText(user.connect_link)
+				.writeText(link)
 				.then(() => {
 					alert('Lien copié.');
 					closeBtn.click();
@@ -91,20 +93,68 @@ const showQRCode = e => {
 	}
 };
 
+const backBtn = e => {
+	if (document.querySelector('div#sidebar').hidden) {
+		selected_contact = null;
+		document.querySelector('div#sidebar').hidden = false;
+		hideConnexion(true);
+		showContacts();
+	} else hideConnexion('toggle');
+};
+
+const addContact = async e => {
+	if (e.target.classList.contains('email')) {
+		e.target.classList.remove('email');
+		let input = document.querySelector('div#search input');
+		let email = input.value.trim();
+		let add_contact = document.querySelector('p#add_contact');
+		let adding_contact = document.querySelector('p#adding_contact');
+
+		add_contact.hidden = true;
+		adding_contact.hidden = false;
+
+		fetch(api + '?lier&identifiant=' + user.id + '&mail=' + email).then(res =>
+			res.json().then(json => {
+				if (json.etat.reponse) {
+					if (urlParams.has('contact')) location.replace(location.origin + location.pathname);
+					else {
+						input.value = '';
+						getRelations(user.id);
+					}
+				} else alert(json.etat.message);
+
+				adding_contact.hidden = true;
+			})
+		);
+	}
+};
+
 const showContacts = () => {
 	setTimeout(e => {
-		document.querySelector('p#add_contacts').hidden = user.contacts.length > 0;
+		document.querySelector('p#search_contact').hidden = user.contacts.length > 0;
 	}, 400);
 
 	let sidebar = document.querySelector('div#sidebar');
-	let list = document.querySelector('div#contact-list');
-	let template = document.querySelector('template.contact');
-	let val = document.querySelector('div#search input').value.trim();
+	let list = sidebar.querySelector('div#contact-list');
+	let template = sidebar.querySelector('template.contact');
+	let val = sidebar.querySelector('div#search input').value.trim();
+	let search_icon = sidebar.querySelector('div#search i');
+	let add_info = sidebar.querySelector('p#add_contact');
 
 	list.innerHTML = '';
 
 	for (let timeout of timeouts) clearTimeout(timeout);
 	timeouts = [];
+
+	if (isEmail(val)) {
+		add_info.hidden = false;
+		search_icon.classList.add('email');
+		search_icon.innerHTML = 'person_add';
+	} else {
+		add_info.hidden = true;
+		search_icon.classList.remove('email');
+		search_icon.innerHTML = 'search';
+	}
 
 	let timeoff = 0;
 	for (let c of user.contacts) {
@@ -114,19 +164,34 @@ const showContacts = () => {
 					list.appendChild(document.createElement('hr'));
 
 					let div = template.cloneNode(true).content.firstElementChild;
+					div.setAttribute('id', 'c' + c.relation);
 
-					if (val) div.querySelector('.name').setAttribute('style', 'color: #6c757d;');
-					div.querySelector('.name').innerHTML = c.identite.replace(val, '<span style="color: #f8f9fa;">' + val + '</span>');
+					if (c.relation === selected_contact) div.classList.add('selected');
+
+					let nameDiv = div.querySelector('.name');
+
+					if (val) {
+						nameDiv.setAttribute('style', 'color: #6c757d;');
+						nameDiv.innerHTML = c.identite.replaceAll(val, '<span style="color: #f8f9fa;">' + val + '</span>');
+					} else nameDiv.innerHTML = c.identite;
+
 					div.querySelector('.id').innerHTML = c.relation;
 
 					div.onclick = e => {
-						setTimeout(e => (sidebar.hidden = true), hideConnexion(true) ? 400 : 0);
-
 						for (let d of document.querySelectorAll('div.contact')) d.classList.remove('selected');
+						selected_contact = null;
 
-						if (e.target.classList.contains('del')) console.log('del');
-						else {
+						if (e.target.classList.contains('del')) {
+							if (confirm('Supprimer ' + c.identite + '?')) {
+								hideConnexion(true);
+								supContact(user.id, c.relation);
+								document.querySelector('div#contact-list').innerHTML = '';
+							}
+						} else {
+							setTimeout(e => (sidebar.hidden = true), hideConnexion(true) ? 400 : 0);
 							div.classList.add('selected');
+							selected_contact = c.relation;
+							showMessages();
 						}
 					};
 
@@ -165,7 +230,7 @@ const connectUser = id => {
 						name: json.identite,
 						contacts: [],
 						connect_link: location.origin + location.pathname + '?connect=' + json.identifiant,
-						contact_link: location.origin + location.pathname + '?contact=' + json.email
+						contact_link: location.origin + location.pathname + '?contact=' + json.mail
 					};
 
 					msg.innerHTML = user.mail;
@@ -182,6 +247,8 @@ const connectUser = id => {
 					};
 
 					document.querySelector('#info_contacts').hidden = false;
+
+					if (urlParams.has('contact')) document.querySelector('div#search input').value = urlParams.get('contact');
 					getRelations(user.id);
 				}
 			})
@@ -224,7 +291,7 @@ const sendEmail = () => {
 	let emailInput = document.querySelector('input#email');
 	let nameInput = document.querySelector('input#name');
 
-	const url = api + '?inscription&identite=' + nameInput.value.trim().replace(' ', '%20') + '&mail=' + emailInput.value;
+	const url = api + '?inscription&identite=' + nameInput.value.trim().replaceAll(' ', '%20') + '&mail=' + emailInput.value;
 
 	fetch(url)
 		.then(res =>
@@ -331,20 +398,31 @@ const showHomescreen = () => {
 	});
 };
 
+const showMessages = () => {
+	if (selected_contact) {
+		let c = getContactInfo(selected_contact);
+		document.querySelector('h2#title').innerHTML = c.identite;
+		document.querySelector('p#subtitle').innerHTML = c.relation;
+		document.querySelector('#messages img').hidden = true;
+	}
+};
+
 const hideConnexion = mode => {
 	let sec = document.querySelector('section');
 	let prev = !sec.classList.contains('hide-connexion');
 
+	if (mode == 'toggle') mode = prev;
+
 	if (mode) {
 		sec.classList.add('hide-connexion');
 		document.querySelector('header').classList.add('more');
-
+		document.querySelector('#messages img').hidden = false;
 		document.querySelector('i#action').innerHTML = 'question_answer';
 		document.querySelector('h2#title').innerHTML = user.name;
 		document.querySelector('p#subtitle').innerHTML = user.mail;
 	} else {
 		sec.classList.remove('hide-connexion');
-
+		user.selected_contact = null;
 		document.querySelector('i#action').innerHTML = 'account_circle';
 		document.querySelector('h2#title').innerHTML = 'WhatSoup';
 		document.querySelector('p#subtitle').innerHTML = 'Accueil';
@@ -353,7 +431,15 @@ const hideConnexion = mode => {
 	return prev;
 };
 
+onpopstate = e => {
+	if (e.state && e.state.noBackExitsApp) {
+		history.pushState({ noBackExitsApp: true }, '');
+		backBtn();
+	}
+};
+
 onload = e => {
+	history.pushState({ noBackExitsApp: true }, '');
 	showHomescreen();
 
 	let userID = null;
