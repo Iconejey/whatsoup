@@ -4,58 +4,96 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="theme-color" content="#131c21" />
+		<meta name="theme-color" content="#212529" />
 		<meta name="color-scheme" content="dark" />
 		<link rel="shortcut icon" type="image/png" href="./send.png" />
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-		<link rel="stylesheet" href="style.css" />
+
+		<link rel="stylesheet" href="./styles/main.css" />
+		<link rel="stylesheet" href="./styles/header.css" />
+		<link rel="stylesheet" href="./styles/sidebar.css" />
+		<link rel="stylesheet" href="./styles/form.css" />
+		<link rel="stylesheet" href="./styles/qrcode.css" />
+		<link rel="stylesheet" href="./styles/messages.css" />
+
 		<link rel="manifest" href="manifest.json" />
 		<title>WhatSoupe</title>
 	</head>
 	<body>
-		<div class="bg" id="bg-color"></div>
-		<div class="bg" id="bg-img"></div>
+		<section>
+			<div class="bg"></div>
 
-		<main>
-			<section id="sign-up">
-				<form id="connexion" hidden>
-					<h2>Se connecter</h2>
-					<div id="id-input">
-						<input id="identifiant" type="text" placeholder="identifiant" />
-						<i id="connect" class="material-icons disabled">check</i>
-						<i id="showQR" class="material-icons" hidden>devices</i>
-						<i id="disconnect" class="material-icons red" hidden>power_settings_new</i>
+			<main>
+				<div id="sidebar">
+					<form id="connexion" onsubmit="return false" hidden>
+						<h2>Se connecter</h2>
+						<div id="id-input">
+							<input id="identifiant" type="text" placeholder="identifiant" />
+							<i id="connect" class="material-icons disabled">check</i>
+							<i id="cancel" class="material-icons" hidden>close</i>
+							<i id="showQR" onclick="showQRCode();" class="material-icons" hidden>devices</i>
+							<i id="disconnect" class="material-icons red" hidden>power_settings_new</i>
+						</div>
+						<p id="id-msg"></p>
+					</form>
+
+					<form id="inscription" onsubmit="return false" hidden>
+						<h2>S'inscrire</h2>
+						<div id="email-input">
+							<input id="name" type="text" placeholder="pseudo" />
+							<input id="email" type="text" placeholder="email" />
+							<i class="material-icons disabled">send</i>
+						</div>
+						<p id="email-msg"></p>
+					</form>
+
+					<p id="info_contacts" hidden>Chargement des contacts...</p>
+
+					<div id="search" hidden>
+						<i class="material-icons">search</i>
+						<input type="text" oninput="showContacts()" onclick="hideConnexion(true)" />
 					</div>
-					<p id="id-msg"></p>
-				</form>
 
-				<form id="inscription" hidden>
-					<h2>S'inscrire</h2>
-					<div id="email-input">
-						<input id="name" type="text" placeholder="pseudo" />
-						<input id="email" type="text" placeholder="email" />
-						<i class="material-icons disabled">send</i>
-					</div>
-					<p id="email-msg"></p>
-				</form>
-			</section>
-		</main>
+					<br />
 
-		<header>
-			<div id="icons">
-				<i id="back" class="material-icons">keyboard_arrow_left</i>
-				<i id="action" class="material-icons">account_circle</i>
-			</div>
+					<p id="add_contacts" hidden>Cliquez sur <i style="color: inherit; transform: translateY(4px); font-size: 18px" class="material-icons">person_add</i> pour ajouter un contact.</p>
 
-			<div id="titles">
-				<h2 id="title">WhatSoup</h2>
-				<p id="subtitle">Accueil</p>
-			</div>
+					<div id="contact-list"></div>
 
-			<div id="right-icons">
-				<i id="more" class="material-icons">power_settings_new</i>
-			</div>
-		</header>
+					<template class="contact">
+						<div class="contact">
+							<i class="material-icons logo">contact_mail</i>
+							<div class="info">
+								<span class="name">Jean Pastèque</span>
+								<br />
+								<span class="id">666</span>
+							</div>
+							<i class="material-icons del">delete</i>
+						</div>
+					</template>
+				</div>
+
+				<div id="messages">
+					<img src="./ilustration.svg" />
+				</div>
+			</main>
+
+			<header>
+				<div id="icons">
+					<i id="back" onclick="if (document.querySelector('div#sidebar').hidden) document.querySelector('div#sidebar').hidden = false; else hideConnexion(false);" class="material-icons">keyboard_arrow_left</i>
+					<i id="action" class="material-icons">account_circle</i>
+				</div>
+
+				<div id="titles">
+					<h2 id="title">WhatSoup</h2>
+					<p id="subtitle">Accueil</p>
+				</div>
+
+				<div id="right-icons">
+					<i id="more" class="material-icons">person_add</i>
+				</div>
+			</header>
+		</section>
 
 		<div id="qrscreen" hidden>
 			<div id="qrtag">
@@ -64,7 +102,7 @@
 						<h2>Connexion</h2>
 						<p id="qremail"></p>
 					</div>
-					<i class="material-icons" onclick="document.querySelector('div#qrscreen').hidden = true;">close</i>
+					<i class="material-icons" onclick="document.querySelector('div#qrscreen').hidden = true;document.querySelector('section').setAttribute('style', 'filter: none');">close</i>
 				</div>
 				<p id="qrsubtitle">Scannez le QRcode avec un smartphone ou une tablette pour vous connecter instantanément.</p>
 				<div id="qrcode"></div>

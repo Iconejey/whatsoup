@@ -1,0 +1,14 @@
+#messages {
+	height: 100%;
+	flex: 1;
+}
+
+#messages img {
+	display: block;
+	height: 30vh;
+	margin: auto;
+	margin-top: 30vh;
+}
+
+@media screen and (max-width: 900px) {
+}
