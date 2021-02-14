@@ -403,7 +403,16 @@ const showMessages = () => {
 		let c = getContactInfo(selected_contact);
 		document.querySelector('h2#title').innerHTML = c.identite;
 		document.querySelector('p#subtitle').innerHTML = c.relation;
-		document.querySelector('#messages img').hidden = true;
+
+		let url = api + '?lire&identifiant=' + user.id + '&relation=' + c.relation;
+
+		fetch(url)
+			.then(res =>
+				res.json().then(json => {
+					console.log(json.messages);
+				})
+			)
+			.catch(fetchError);
 	}
 };
 
@@ -416,7 +425,6 @@ const hideConnexion = mode => {
 	if (mode) {
 		sec.classList.add('hide-connexion');
 		document.querySelector('header').classList.add('more');
-		document.querySelector('#messages img').hidden = false;
 		document.querySelector('i#action').innerHTML = 'question_answer';
 		document.querySelector('h2#title').innerHTML = user.name;
 		document.querySelector('p#subtitle').innerHTML = user.mail;
