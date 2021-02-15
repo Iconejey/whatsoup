@@ -1,6 +1,9 @@
 div#messages {
-	height: 100%;
 	flex: 1;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
 }
 
 div#messages:empty {
@@ -15,7 +18,7 @@ div.message {
 	display: flex;
 }
 
-div.message:last-child {
+div.message:nth-last-child(-n + 2) {
 	padding-bottom: 20px;
 }
 
@@ -25,30 +28,99 @@ div.message p {
 	border: none;
 	padding: 8px;
 	max-width: 80%;
-	border-radius: 10px;
+	border-radius: 0px 10px 10px 10px;
 	text-align: justify;
 	box-shadow: 0px 0px 5px -2px black;
+	transition: all 0.5s;
+	animation: message-appear-left 0.3s;
 }
 
 div.message p:empty {
 	width: 100%;
 }
 
-div.message.left + div.message.left {
+.left + .left,
+.edit + .edit,
+.right + .edit,
+.edit + .right,
+.right + .right {
 	padding-top: 5px;
 }
 
-div.message.right {
+div.message.right,
+div.message.edit {
 	justify-content: flex-end;
 }
 
-div.message.right p {
+div.message.right p,
+div.message.edit p {
+	animation: message-appear-right 0.3s;
 	background-color: #6c757d;
+	border-radius: 10px 10px 0px 10px;
 }
 
-div.message.right + div.message.right {
-	padding-top: 5px;
+div.message.edit p {
+	opacity: 0.8;
+	background-color: #6c757d88 !important;
 }
 
-@media screen and (max-width: 650px) {
+div.message.edit {
+	animation: message-appear-edit 1s;
+	padding-right: 10px;
+}
+
+div.message p.not-sent {
+	/* margin-right: 10px; */
+	background-color: #92323263 !important;
+	color: #e66767e0;
+}
+
+i.message-btn {
+	background-color: #6c757d88;
+	font-size: 23px;
+	padding: 6px;
+	border-radius: 20px;
+	margin-left: 10px;
+	transition: all 0.3s;
+	box-shadow: 0px 0px 5px -2px black;
+	align-self: flex-end;
+}
+
+.edit p:empty + i.message-btn {
+	opacity: 0.5;
+}
+
+i.message-btn.sent {
+	margin-left: 30px;
+	margin-right: -55px;
+}
+
+@keyframes message-appear-right {
+	from {
+		transform: translateX(calc(100% + 20px));
+	}
+	to {
+		transform: none;
+	}
+}
+
+@keyframes message-appear-left {
+	from {
+		transform: translateX(calc(-100% - 20px));
+	}
+	to {
+		transform: none;
+	}
+}
+
+@keyframes message-appear-edit {
+	0% {
+		margin-bottom: -60px;
+	}
+	60% {
+		margin-bottom: -60px;
+	}
+	100% {
+		margin-bottom: 0px;
+	}
 }

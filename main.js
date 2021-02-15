@@ -17,21 +17,28 @@ const fetchError = err => {
 
 const getRelations = id =>
 	fetch(api + '?relations&identifiant=' + id)
-		.then(res =>
-			res.json().then(async json => {
-				user.contacts = json.relations;
-				document.querySelector('p#info_contacts').hidden = true;
-				setTimeout(e => (document.querySelector('div#search').hidden = false), 400);
-				setTimeout(e => showContacts(''), 800);
-				hideConnexion(true);
-			})
-		)
+		.then(res => res.json())
+		.then(async json => {
+			if (!user.contacts.length) setTimeout(e => fetchMessages(), 1000);
+			user.contacts = json.relations;
+			for (let c of user.contacts) c.messages = [];
+			document.querySelector('p#info_contacts').hidden = true;
+			setTimeout(e => (document.querySelector('div#search').hidden = false), 400);
+			setTimeout(e => showContacts(''), 800);
+			hideConnexion(true);
+		})
 		.catch(fetchError);
 
 const supContact = (id, contact_id) =>
 	fetch(api + '?delier&identifiant=' + id + '&relation=' + contact_id)
-		.then(res => res.json().then(json => getRelations(user.id)))
+		.then(res => res.json())
+		.then(json => getRelations(user.id))
 		.catch(fetchError);
+
+const sendMessage = (contact, message) =>
+	fetch(api + '?ecrire&identifiant=' + user.id + '&relation=' + contact + '&message=' + encodeURI(message.trim()).replaceAll("'", '%27'))
+		.then(res => res.json())
+		.then(json => json);
 
 const qrCanvas = data => {
 	let can = document.createElement('canvas');
@@ -113,8 +120,9 @@ const addContact = async e => {
 		add_contact.hidden = true;
 		adding_contact.hidden = false;
 
-		fetch(api + '?lier&identifiant=' + user.id + '&mail=' + email).then(res =>
-			res.json().then(json => {
+		fetch(api + '?lier&identifiant=' + user.id + '&mail=' + email)
+			.then(res => res.json())
+			.then(json => {
 				if (json.etat.reponse) {
 					if (urlParams.has('contact')) location.replace(location.origin + location.pathname);
 					else {
@@ -125,7 +133,7 @@ const addContact = async e => {
 
 				adding_contact.hidden = true;
 			})
-		);
+			.catch(fetchError);
 	}
 };
 
@@ -221,38 +229,37 @@ const connectUser = id => {
 	const url = api + '?information&identifiant=' + id;
 
 	fetch(url)
-		.then(res =>
-			res.json().then(json => {
-				if (json.etat.reponse) {
-					user = {
-						mail: json.mail,
-						id: json.identifiant,
-						name: json.identite,
-						contacts: [],
-						connect_link: location.origin + location.pathname + '?connect=' + json.identifiant,
-						contact_link: location.origin + location.pathname + '?contact=' + json.mail
-					};
+		.then(res => res.json())
+		.then(json => {
+			if (json.etat.reponse) {
+				user = {
+					mail: json.mail,
+					id: json.identifiant,
+					name: json.identite,
+					contacts: [],
+					connect_link: location.origin + location.pathname + '?connect=' + json.identifiant,
+					contact_link: location.origin + location.pathname + '?contact=' + json.mail
+				};
 
-					msg.innerHTML = user.mail;
-					title.innerHTML = user.name;
-					cancelBtn.hidden = true;
-					showQRBtn.hidden = false;
-					disconnectBtn.hidden = false;
+				msg.innerHTML = user.mail;
+				title.innerHTML = user.name;
+				cancelBtn.hidden = true;
+				showQRBtn.hidden = false;
+				disconnectBtn.hidden = false;
 
-					disconnectBtn.onclick = e => {
-						if (confirm('Se déconnecter de ' + user.mail + '?')) {
-							setCookie('user', '');
-							location.reload();
-						}
-					};
+				disconnectBtn.onclick = e => {
+					if (confirm('Se déconnecter de ' + user.mail + '?')) {
+						setCookie('user', '');
+						location.reload();
+					}
+				};
 
-					document.querySelector('#info_contacts').hidden = false;
+				document.querySelector('#info_contacts').hidden = false;
 
-					if (urlParams.has('contact')) document.querySelector('div#search input').value = urlParams.get('contact');
-					getRelations(user.id);
-				}
-			})
-		)
+				if (urlParams.has('contact')) document.querySelector('div#search input').value = urlParams.get('contact');
+				getRelations(user.id);
+			}
+		})
 		.catch(fetchError);
 };
 
@@ -274,14 +281,11 @@ const sendID = () => {
 		}
 	};
 
-	const url = api + '?activation=' + input.value;
-
-	fetch(url)
-		.then(res =>
-			res.json().then(json => {
-				if (json.etat.reponse) connectUser(json.identifiant);
-			})
-		)
+	fetch(api + '?activation=' + input.value)
+		.then(res => res.json())
+		.then(json => {
+			if (json.etat.reponse) connectUser(json.identifiant);
+		})
 		.catch(fetchError);
 };
 
@@ -291,22 +295,18 @@ const sendEmail = () => {
 	let emailInput = document.querySelector('input#email');
 	let nameInput = document.querySelector('input#name');
 
-	const url = api + '?inscription&identite=' + nameInput.value.trim().replaceAll(' ', '%20') + '&mail=' + emailInput.value;
+	const url = api + '?inscription&identite=' + encodeURI(nameInput.value.trim()) + '&mail=' + encodeURI(emailInput.value);
 
-	fetch(url)
-		.then(res =>
-			res.json().then(json => {
-				if (confirm(json.etat.message)) {
-					emailInput.value = '';
-					nameInput.value = '';
-				}
-				checkEmailInput();
-			})
-		)
-		.catch(err => {
-			console.error('Erreur:', err);
-			alert("Une erreur s'est Produite.");
-		});
+	fetch(url.replaceAll("'", '%27'))
+		.then(res => res.json())
+		.then(json => {
+			if (confirm(json.etat.message)) {
+				emailInput.value = '';
+				nameInput.value = '';
+			}
+			checkEmailInput();
+		})
+		.catch(fetchError);
 };
 
 const checkIdInput = () => {
@@ -398,21 +398,86 @@ const showHomescreen = () => {
 	});
 };
 
+const fetchMessages = async () => {
+	let promises = [];
+
+	for (let c of user.contacts)
+		promises.push(
+			fetch(api + '?lire&identifiant=' + user.id + '&relation=' + c.relation)
+				.then(res => res.json())
+				.then(json => {
+					c.messages.push(...json.messages);
+					if (c.relation === selected_contact) for (let m of json.messages) if (m.identite != user.name) addMessage(m);
+				})
+		);
+
+	await Promise.all(promises).catch(err => console.error(err));
+
+	console.log('fetched');
+	setTimeout(e => fetchMessages(), 2000);
+};
+
 const showMessages = () => {
+	document.querySelector('div#messages').innerHTML = '';
+
 	if (selected_contact) {
 		let c = getContactInfo(selected_contact);
 		document.querySelector('h2#title').innerHTML = c.identite;
 		document.querySelector('p#subtitle').innerHTML = c.relation;
 
-		let url = api + '?lire&identifiant=' + user.id + '&relation=' + c.relation;
+		addMessage();
 
-		fetch(url)
-			.then(res =>
-				res.json().then(json => {
-					console.log(json.messages);
-				})
-			)
-			.catch(fetchError);
+		setTimeout(e => {
+			for (let m of getContactInfo(selected_contact).messages) addMessage(m);
+		}, 400);
+	}
+};
+
+const addMessage = m => {
+	let list = document.querySelector('div#messages');
+	let elem = document.createElement('div');
+	let text = document.createElement('p');
+
+	elem.classList.add('message');
+	elem.appendChild(text);
+
+	if (m) {
+		elem.classList.add(m.identite == user.name ? 'right' : 'left');
+		text.innerHTML = m.message;
+		list.insertBefore(elem, list.lastChild);
+	} else {
+		elem.classList.add('edit');
+		text.contentEditable = true;
+
+		let btn = document.createElement('i');
+		btn.classList.add('material-icons');
+		btn.classList.add('message-btn');
+		btn.innerHTML = 'send';
+
+		btn.onclick = e => {
+			if (text.innerHTML) {
+				btn.classList.add('sent');
+				text.contentEditable = false;
+
+				addMessage();
+
+				sendMessage(selected_contact, text.innerHTML)
+					.then(res => {
+						console.log(text.innerHTML, res);
+
+						if (res.etat.reponse) {
+							elem.classList.remove('edit');
+							elem.classList.add('right');
+							btn.remove();
+						} else text.classList.add('not-sent');
+					})
+					.catch(err => text.classList.add('not-sent'));
+			}
+		};
+
+		elem.appendChild(btn);
+		list.appendChild(elem);
+		text.focus();
 	}
 };
 
