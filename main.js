@@ -35,10 +35,12 @@ const supContact = (id, contact_id) =>
 		.then(json => getRelations(user.id))
 		.catch(fetchError);
 
-const sendMessage = (contact, message) =>
-	fetch(api + '?ecrire&identifiant=' + user.id + '&relation=' + contact + '&message=' + encodeURI(message.trim()).replaceAll("'", '%27'))
+const sendMessage = (contact, message) => {
+	let text = encodeURI(message);
+	return fetch(api + '?ecrire&identifiant=' + user.id + '&relation=' + contact + '&message=' + text)
 		.then(res => res.json())
 		.then(json => json);
+};
 
 const qrCanvas = data => {
 	let can = document.createElement('canvas');
@@ -101,6 +103,8 @@ const showQRCode = contact => {
 };
 
 const backBtn = e => {
+	document.querySelector('div#messages').innerHTML = '';
+
 	if (document.querySelector('div#sidebar').hidden) {
 		selected_contact = null;
 		document.querySelector('div#sidebar').hidden = false;
@@ -196,10 +200,16 @@ const showContacts = () => {
 								document.querySelector('div#contact-list').innerHTML = '';
 							}
 						} else {
-							setTimeout(e => (sidebar.hidden = true), hideConnexion(true) ? 400 : 0);
+							setTimeout(
+								e => {
+									sidebar.hidden = true;
+									showMessages();
+								},
+								hideConnexion(true) ? 400 : 0
+							);
+
 							div.classList.add('selected');
 							selected_contact = c.relation;
-							showMessages();
 						}
 					};
 
@@ -457,14 +467,13 @@ const addMessage = m => {
 		btn.onclick = e => {
 			if (text.innerHTML) {
 				btn.classList.add('sent');
+				text.innerHTML = text.innerHTML.replaceAll('&nbsp;', '').trim();
 				text.contentEditable = false;
 
 				addMessage();
 
 				sendMessage(selected_contact, text.innerHTML)
 					.then(res => {
-						console.log(text.innerHTML, res);
-
 						if (res.etat.reponse) {
 							elem.classList.remove('edit');
 							elem.classList.add('right');

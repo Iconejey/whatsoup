@@ -6,13 +6,6 @@ div#messages {
 	justify-content: flex-end;
 }
 
-div#messages:empty {
-	background-image: url(../ilustration.svg);
-	background-position: center;
-	background-size: 30vh;
-	background-repeat: no-repeat;
-}
-
 div.message {
 	padding: 20px 20px 0px 20px;
 	display: flex;
@@ -32,7 +25,7 @@ div.message p {
 	text-align: justify;
 	box-shadow: 0px 0px 5px -2px black;
 	transition: all 0.5s;
-	animation: message-appear-left 0.3s;
+	animation: message-appear-left 0.5s;
 }
 
 div.message p:empty {
@@ -54,7 +47,7 @@ div.message.edit {
 
 div.message.right p,
 div.message.edit p {
-	animation: message-appear-right 0.3s;
+	animation: message-appear-right 0.5s;
 	background-color: #6c757d;
 	border-radius: 10px 10px 0px 10px;
 }
@@ -122,5 +115,14 @@ i.message-btn.sent {
 	}
 	100% {
 		margin-bottom: 0px;
+	}
+}
+
+@media screen and (max-width: 650px) {
+	div#messages:empty {
+		background-image: url(../ilustration.svg);
+		background-position: center;
+		background-size: 30vh;
+		background-repeat: no-repeat;
 	}
 }
