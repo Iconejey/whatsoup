@@ -26,6 +26,7 @@ div.message p {
 	box-shadow: 0px 0px 5px -2px black;
 	transition: all 0.5s;
 	animation: message-appear-left 0.5s;
+	word-wrap: break-word;
 }
 
 div.message p:empty {
@@ -118,7 +119,7 @@ i.message-btn.sent {
 	}
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (min-width: 650px) {
 	div#messages:empty {
 		background-image: url(../ilustration.svg);
 		background-position: center;

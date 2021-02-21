@@ -9,7 +9,6 @@ div#sidebar {
 	box-shadow: 0px 0px 5px 0px black;
 	transition: width 0.5s, margin 0.5s, max-width 0.5s;
 	z-index: 5;
-	/* opacity: 0.5; */
 }
 
 p.info {
@@ -55,6 +54,7 @@ div#search input {
 
 div#contact-list {
 	overflow-y: auto;
+	overflow-x: hidden;
 	max-height: calc(100% - 80px);
 }
 
@@ -71,6 +71,7 @@ div.contact {
 	display: flex;
 	transition: background-color 0.3s;
 	animation: fade-left 0.5s;
+	padding-right: 24px;
 }
 
 div.contact:hover {
@@ -91,10 +92,25 @@ div.contact div.info {
 	flex: 1;
 }
 
+div.contact span.num {
+	opacity: 0;
+	margin: 24px 0px;
+	background-color: #aae;
+	color: #212529;
+	font-size: 16px;
+	text-align: center;
+	padding-top: 3px;
+	margin-right: 5px;
+	width: 24px;
+	height: 24px;
+	border-radius: 12px;
+	transition: opacity 0.5s;
+}
+
 div.contact i.del {
 	transition: color 0.3s, opacity 0.3s;
 	font-size: 24px;
-	margin: 24px;
+	margin: 24px 0px;
 }
 
 div.contact i.del:hover {
@@ -105,6 +121,34 @@ div.contact i.del:hover {
 div.contact i,
 div.contact span.id {
 	opacity: 0.5;
+}
+
+div.contact span.name {
+	font-size: 17px;
+}
+
+div.contact span.id {
+	font-size: 14px;
+	white-space: nowrap;
+	max-width: 100px;
+}
+
+div.contact.unread span.name,
+div.contact.unread span.id {
+	font-weight: bold;
+}
+
+div.contact.unread span.id {
+	opacity: 0.7;
+	text-overflow: ellipsis;
+}
+
+div.contact.unread i.logo {
+	opacity: 1;
+}
+
+div.contact.unread span.num {
+	opacity: 1;
 }
 
 @media screen and (min-width: 1000px) {

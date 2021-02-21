@@ -18,7 +18,7 @@ const fetchError = err => {
 const getRelations = id =>
 	fetch(api + '?relations&identifiant=' + id)
 		.then(res => res.json())
-		.then(async json => {
+		.then(json => {
 			if (!user.contacts.length) setTimeout(e => fetchMessages(), 1000);
 			user.contacts = json.relations;
 			for (let c of user.contacts) c.messages = [];
@@ -109,7 +109,7 @@ const backBtn = e => {
 		selected_contact = null;
 		document.querySelector('div#sidebar').hidden = false;
 		hideConnexion(true);
-		showContacts();
+		document.querySelector('div.contact.selected').classList.remove('selected');
 	} else hideConnexion('toggle');
 };
 
@@ -181,13 +181,13 @@ const showContacts = () => {
 					if (c.relation === selected_contact) div.classList.add('selected');
 
 					let nameDiv = div.querySelector('.name');
+					let idDiv = div.querySelector('.id');
+					idDiv.innerHTML = c.relation;
 
 					if (val) {
 						nameDiv.setAttribute('style', 'color: #6c757d;');
 						nameDiv.innerHTML = c.identite.replaceAll(val, '<span style="color: #f8f9fa;">' + val + '</span>');
 					} else nameDiv.innerHTML = c.identite;
-
-					div.querySelector('.id').innerHTML = c.relation;
 
 					div.onclick = e => {
 						for (let d of document.querySelectorAll('div.contact')) d.classList.remove('selected');
@@ -208,8 +208,12 @@ const showContacts = () => {
 								hideConnexion(true) ? 400 : 0
 							);
 
+							div.classList.remove('unread');
 							div.classList.add('selected');
 							selected_contact = c.relation;
+							idDiv.innerHTML = c.relation;
+
+							setTimeout(e => (div.querySelector('.num').innerHTML = 0), 500);
 						}
 					};
 
@@ -417,7 +421,21 @@ const fetchMessages = async () => {
 				.then(res => res.json())
 				.then(json => {
 					c.messages.push(...json.messages);
-					if (c.relation === selected_contact) for (let m of json.messages) if (m.identite != user.name) addMessage(m);
+					if (c.relation === selected_contact) {
+						for (let m of json.messages) if (m.identite != user.name) addMessage(m);
+					} else if (json.messages.length) {
+						console.log(json.messages.length);
+						let div = document.querySelector('#c' + c.relation);
+						let num = div.querySelector('span.num');
+
+						num.innerHTML = parseInt(num.innerHTML) + json.messages.length;
+
+						let txt = c.messages[c.messages.length - 1].message;
+						if (txt.length > 10) txt = txt.slice(0, 9).trim() + '...';
+
+						div.querySelector('span.id').innerHTML = txt;
+						div.classList.add('unread');
+					}
 				})
 		);
 
@@ -486,6 +504,7 @@ const addMessage = m => {
 
 		elem.appendChild(btn);
 		list.appendChild(elem);
+
 		text.focus();
 	}
 };
