@@ -6,6 +6,18 @@ let user = null;
 let timeouts = [];
 let selected_contact = null;
 
+// Détection de mise à jour par le service worker
+new Promise((res, err) =>
+	navigator.serviceWorker.register('./sw.js', { scope: './' }).then(reg => {
+		reg.onupdatefound = () => {
+			const installingWorker = reg.installing;
+			installingWorker.onstatechange = () => res(installingWorker.state == 'installed' && navigator.serviceWorker.controller);
+		};
+	})
+).then(isAvailable => {
+	if (isAvailable && confirm('Mise à jour disponible, recharger la page?')) location.reload();
+});
+
 const getContactInfo = id => {
 	for (let c of user.contacts) if (c.relation == id) return c;
 };
