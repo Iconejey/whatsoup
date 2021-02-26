@@ -1,0 +1,169 @@
+div#sidebar {
+	display: block;
+	background-color: #212529;
+	float: left;
+	flex: none;
+	height: 100%;
+	width: 35%;
+	min-width: 300px;
+	box-shadow: 0px 0px 5px 0px black;
+	will-change: auto;
+	transition: width 0.5s, margin 0.5s, max-width 0.5s;
+	z-index: 5;
+}
+
+p.info {
+	color: #adb5bd;
+	width: 100%;
+	padding: 0px 35px;
+	animation: fade 0.5s;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+div#search:not([hidden]) {
+	display: flex;
+	background-color: #343a40;
+	border: 5px solid transparent;
+	border-radius: 25px;
+	margin: 0px 10px;
+	animation: fade-left 0.5s;
+}
+
+div#search i {
+	margin: 5px;
+	opacity: 0.5;
+}
+
+div#search i.email {
+	transition: opacity 0.3s;
+}
+
+div#search i.email:hover {
+	opacity: 1;
+}
+
+div#search input {
+	flex: 1;
+	margin-left: 5px;
+	border: none;
+	background-color: #343a40;
+	border-radius: 5px;
+	font-size: 18px;
+	min-width: 10px;
+}
+
+div#contact-list {
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: calc(100% - 80px);
+}
+
+hr {
+	height: 0.8px;
+	border: none;
+	background-color: #495057;
+	margin: 0px 10px;
+	animation: fade 0.5s;
+}
+
+div.contact {
+	width: 100%;
+	display: flex;
+	transition: background-color 0.3s;
+	animation: fade-left 0.5s;
+	padding-right: 24px;
+}
+
+div.contact:hover {
+	background-color: #343a40;
+}
+
+div.contact.selected {
+	background-color: #495057;
+}
+
+div.contact i.logo {
+	font-size: 32px;
+	margin: 20px;
+}
+
+div.contact div.info {
+	margin-top: 18px;
+	flex: 1;
+}
+
+div.contact span.num {
+	opacity: 0;
+	margin: 24px 0px;
+	background-color: #aae;
+	color: #212529;
+	font-size: 16px;
+	text-align: center;
+	padding-top: 3px;
+	margin-right: 5px;
+	width: 24px;
+	height: 24px;
+	border-radius: 12px;
+	transition: opacity 0.5s;
+}
+
+div.contact i.del {
+	transition: color 0.3s, opacity 0.3s;
+	font-size: 24px;
+	margin: 24px 0px;
+}
+
+div.contact i.del:hover {
+	opacity: 1;
+	color: #f55;
+}
+
+div.contact i,
+div.contact span.id {
+	opacity: 0.5;
+}
+
+div.contact span.name {
+	font-size: 17px;
+}
+
+div.contact span.id {
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+div.contact.unread span.name,
+div.contact.unread span.id {
+	font-weight: bold;
+}
+
+div.contact.unread span.id {
+	opacity: 0.7;
+	text-overflow: ellipsis;
+}
+
+div.contact.unread i.logo {
+	opacity: 1;
+}
+
+div.contact.unread span.num {
+	opacity: 1;
+}
+
+@media screen and (min-width: 1000px) {
+	div#sidebar {
+		max-width: 400px;
+	}
+}
+
+@media screen and (max-width: 650px) {
+	div#sidebar {
+		width: 100%;
+	}
+
+	div#sidebar[hidden] {
+		margin-left: -100%;
+		width: 100%;
+	}
+}
