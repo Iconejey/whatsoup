@@ -7,8 +7,10 @@ const files = [
 	'./manifest.webmanifest',
 
 	// images
-	'./ilustration.svg',
-	'./send.png',
+	'./img/ilustration.svg',
+	'./img/send.png',
+	'./img/send512.png',
+	'./img/send192.png',
 
 	// javascript
 	'./main.js',
