@@ -64,7 +64,6 @@ div.message.edit {
 }
 
 div.message p.not-sent {
-	/* margin-right: 10px; */
 	background-color: #92323263 !important;
 	color: #e66767e0;
 }
@@ -121,7 +120,7 @@ i.message-btn.sent {
 
 @media screen and (min-width: 650px) {
 	div#messages:empty {
-		background-image: url(../ilustration.svg);
+		background-image: url(../img/ilustration.svg);
 		background-position: center;
 		background-size: 30vh;
 		background-repeat: no-repeat;
